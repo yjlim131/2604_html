@@ -1,2 +1,3 @@
-"# 2604_html" 
-"# 2604_html TEST" 
+## Git 연동 실습
+## repository 생성
+
