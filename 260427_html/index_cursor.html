@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruit Header Navigation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Noto Sans KR", "Segoe UI", Arial, sans-serif;
+            color: #111;
+            background: #f8f8f8;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #fff;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .header-inner {
+            max-width: 1320px;
+            margin: 0 auto;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            gap: 20px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .logo img {
+            width: 190px;
+            height: auto;
+            display: block;
+        }
+
+        .gnb {
+            flex: 1;
+        }
+
+        .gnb-level1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 34px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .gnb-item {
+            position: relative;
+        }
+
+        .gnb-link {
+            display: inline-flex;
+            align-items: center;
+            height: 76px;
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .submenu-wrap {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 240px;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            padding: 8px;
+            display: none;
+        }
+
+        .submenu-level2 {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .submenu-level2 > li {
+            position: relative;
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .submenu-level2 > li + li {
+            border-top: 1px solid #f1f1f1;
+        }
+
+        .depth2-title {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 12px;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .depth2-title::after {
+            content: ">";
+            float: right;
+            color: #999;
+        }
+
+        .submenu-level3 {
+            list-style: none;
+            margin: 0;
+            padding: 8px;
+            display: none;
+            position: absolute;
+            left: calc(100% + 8px);
+            top: 0;
+            min-width: 180px;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+        }
+
+        .submenu-level3 a {
+            display: block;
+            font-size: 13px;
+            color: #555;
+            padding: 7px 9px;
+            border-radius: 6px;
+        }
+
+        .submenu-level3 li + li {
+            margin-top: 4px;
+        }
+
+        .submenu-level2 > li:hover .submenu-level3,
+        .submenu-level2 > li:focus-within .submenu-level3 {
+            display: block;
+        }
+
+        .submenu-level2 > li:hover .depth2-title,
+        .submenu-level2 > li:focus-within .depth2-title {
+            background: #f5f7ff;
+        }
+
+        .submenu-level3 a:hover,
+        .submenu-level3 a:focus-visible {
+            color: #fff;
+            background: #222;
+        }
+
+        .gnb-item:hover .submenu-wrap,
+        .gnb-item:focus-within .submenu-wrap {
+            display: block;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .lang-select,
+        .family-select {
+            border: 0;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            cursor: pointer;
+            padding: 6px 10px;
+        }
+
+        .divider {
+            width: 1px;
+            height: 18px;
+            background: #ddd;
+        }
+
+        .hamburger-btn {
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger-icon {
+            width: 22px;
+            height: 14px;
+            position: relative;
+        }
+
+        .hamburger-icon span {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #111;
+            transition: 0.25s;
+        }
+
+        .hamburger-icon span:nth-child(1) { top: 0; }
+        .hamburger-icon span:nth-child(2) { top: 6px; }
+        .hamburger-icon span:nth-child(3) { top: 12px; }
+
+        .hamburger-btn.is-open .hamburger-icon span:nth-child(1) {
+            top: 6px;
+            transform: rotate(45deg);
+        }
+        .hamburger-btn.is-open .hamburger-icon span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.is-open .hamburger-icon span:nth-child(3) {
+            top: 6px;
+            transform: rotate(-45deg);
+        }
+
+        .allmenu-panel {
+            display: none;
+            border-top: 1px solid #ededed;
+            background: #fff;
+        }
+
+        .allmenu-panel.open {
+            display: block;
+        }
+
+        .allmenu-inner {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .allmenu-group {
+            border: 1px solid #efefef;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .allmenu-title {
+            margin: 0 0 10px;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .allmenu-depth2 {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .allmenu-depth2 > li + li {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #ececec;
+        }
+
+        .allmenu-depth2 strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .allmenu-depth3 {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .allmenu-depth3 li {
+            font-size: 12px;
+            color: #666;
+            background: #f7f7f7;
+            border-radius: 999px;
+            padding: 4px 9px;
+        }
+
+        main {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .mock-content {
+            height: 500px;
+            border: 1px dashed #d6d6d6;
+            border-radius: 10px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 18px;
+        }
+
+        @media (max-width: 1060px) {
+            .gnb {
+                display: none;
+            }
+
+            .allmenu-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="#" class="logo"><img src="./yj-on-the-log-logo.svg" alt="YJ on the log"></a>
+
+            <nav class="gnb" aria-label="메인 메뉴">
+                <ul class="gnb-level1" id="gnbLevel1"></ul>
+            </nav>
+
+            <div class="header-actions">
+                <select class="lang-select" id="languageSelect" aria-label="언어 선택">
+                    <option value="ko">한국어</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                </select>
+                <div class="divider"></div>
+                <select class="family-select" id="familySiteSelect" aria-label="패밀리 사이트">
+                    <option value="" data-i18n="familySite">Family Site</option>
+                    <option value="https://example.com/company">Corporate</option>
+                    <option value="https://example.com/jobs">Jobs</option>
+                </select>
+                <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="전체 메뉴 열기" aria-expanded="false">
+                    <span class="hamburger-icon" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <section class="allmenu-panel" id="allmenuPanel" aria-label="전체 메뉴">
+            <div class="allmenu-inner" id="allmenuInner"></div>
+        </section>
+    </header>
+    <main>
+        <section class="mock-content" data-i18n="contentPlaceholder">채용사이트 콘텐츠 영역</section>
+    </main>
+    <footer></footer>
+
+    <script>
+        const i18n = {
+            ko: {
+                logo: "채용포털",
+                familySite: "Family Site",
+                contentPlaceholder: "채용사이트 콘텐츠 영역",
+                ariaMenuOpen: "전체 메뉴 열기",
+                ariaMenuClose: "전체 메뉴 닫기",
+                menu: [
+                    {
+                        title: "회사소개",
+                        children: [
+                            { title: "브랜드 스토리", items: ["비전", "핵심가치", "연혁"] },
+                            { title: "조직문화", items: ["인재상", "근무환경", "복리후생"] }
+                        ]
+                    },
+                    {
+                        title: "채용정보",
+                        children: [
+                            { title: "채용공고", items: ["신입", "경력", "인턴"] },
+                            { title: "지원가이드", items: ["채용절차", "직무안내", "FAQ"] }
+                        ]
+                    },
+                    {
+                        title: "직무소개",
+                        children: [
+                            { title: "사업직군", items: ["MD", "마케팅", "영업"] },
+                            { title: "지원직군", items: ["개발", "데이터", "디자인"] }
+                        ]
+                    },
+                    {
+                        title: "성장과문화",
+                        children: [
+                            { title: "커리어 성장", items: ["교육제도", "멘토링", "사내이동"] },
+                            { title: "조직문화", items: ["워크숍", "사내행사", "소통채널"] }
+                        ]
+                    },
+                    {
+                        title: "지원자센터",
+                        children: [
+                            { title: "지원현황", items: ["내 지원서", "전형결과", "면접일정"] },
+                            { title: "문의하기", items: ["1:1 문의", "자주묻는질문", "공지사항"] }
+                        ]
+                    }
+                ]
+            },
+            en: {
+                logo: "Career Portal",
+                familySite: "Family Site",
+                contentPlaceholder: "Recruitment website content area",
+                ariaMenuOpen: "Open all menu",
+                ariaMenuClose: "Close all menu",
+                menu: [
+                    {
+                        title: "Company",
+                        children: [
+                            { title: "Brand Story", items: ["Vision", "Core Values", "History"] },
+                            { title: "Culture", items: ["Talent DNA", "Work Environment", "Benefits"] }
+                        ]
+                    },
+                    {
+                        title: "Careers",
+                        children: [
+                            { title: "Open Positions", items: ["Entry Level", "Experienced", "Internship"] },
+                            { title: "Application Guide", items: ["Hiring Process", "Job Overview", "FAQ"] }
+                        ]
+                    },
+                    {
+                        title: "Job Fields",
+                        children: [
+                            { title: "Business Roles", items: ["Merchandising", "Marketing", "Sales"] },
+                            { title: "Tech Roles", items: ["Engineering", "Data", "Design"] }
+                        ]
+                    },
+                    {
+                        title: "Growth & Culture",
+                        children: [
+                            { title: "Career Growth", items: ["Learning", "Mentoring", "Internal Mobility"] },
+                            { title: "Work Culture", items: ["Workshops", "Company Events", "Communication"] }
+                        ]
+                    },
+                    {
+                        title: "Candidate Center",
+                        children: [
+                            { title: "My Application", items: ["My Profile", "Status", "Interview Schedule"] },
+                            { title: "Support", items: ["Contact Us", "FAQ", "Notice"] }
+                        ]
+                    }
+                ]
+            },
+            ja: {
+                logo: "採用ポータル",
+                familySite: "ファミリーサイト",
+                contentPlaceholder: "採用サイトコンテンツエリア",
+                ariaMenuOpen: "全メニューを開く",
+                ariaMenuClose: "全メニューを閉じる",
+                menu: [
+                    {
+                        title: "会社紹介",
+                        children: [
+                            { title: "ブランドストーリー", items: ["ビジョン", "コアバリュー", "沿革"] },
+                            { title: "組織文化", items: ["求める人物像", "勤務環境", "福利厚生"] }
+                        ]
+                    },
+                    {
+                        title: "採用情報",
+                        children: [
+                            { title: "採用ポジション", items: ["新卒", "中途", "インターン"] },
+                            { title: "応募ガイド", items: ["選考プロセス", "職務紹介", "FAQ"] }
+                        ]
+                    },
+                    {
+                        title: "職種紹介",
+                        children: [
+                            { title: "ビジネス職群", items: ["MD", "マーケティング", "営業"] },
+                            { title: "専門職群", items: ["開発", "データ", "デザイン"] }
+                        ]
+                    },
+                    {
+                        title: "成長と文化",
+                        children: [
+                            { title: "キャリア成長", items: ["教育制度", "メンタリング", "社内異動"] },
+                            { title: "組織文化", items: ["ワークショップ", "社内イベント", "コミュニケーション"] }
+                        ]
+                    },
+                    {
+                        title: "応募者センター",
+                        children: [
+                            { title: "応募状況", items: ["マイ応募", "選考結果", "面接日程"] },
+                            { title: "お問い合わせ", items: ["1:1問い合わせ", "よくある質問", "お知らせ"] }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const gnbLevel1 = document.getElementById("gnbLevel1");
+        const allmenuInner = document.getElementById("allmenuInner");
+        const languageSelect = document.getElementById("languageSelect");
+        const familySiteSelect = document.getElementById("familySiteSelect");
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        const allmenuPanel = document.getElementById("allmenuPanel");
+
+        function renderMenu(lang) {
+            const dict = i18n[lang];
+
+            gnbLevel1.innerHTML = dict.menu.map((menu1) => `
+                <li class="gnb-item">
+                    <a href="#" class="gnb-link">${menu1.title}</a>
+                    <div class="submenu-wrap">
+                        <ul class="submenu-level2">
+                            ${menu1.children.map((menu2) => `
+                                <li>
+                                    <a href="#" class="depth2-title">${menu2.title}</a>
+                                    <ul class="submenu-level3">
+                                        ${menu2.items.map((item) => `<li><a href="#">${item}</a></li>`).join("")}
+                                    </ul>
+                                </li>
+                            `).join("")}
+                        </ul>
+                    </div>
+                </li>
+            `).join("");
+
+            allmenuInner.innerHTML = dict.menu.map((menu1) => `
+                <article class="allmenu-group">
+                    <h2 class="allmenu-title">${menu1.title}</h2>
+                    <ul class="allmenu-depth2">
+                        ${menu1.children.map((menu2) => `
+                            <li>
+                                <strong>${menu2.title}</strong>
+                                <ul class="allmenu-depth3">
+                                    ${menu2.items.map((item) => `<li>${item}</li>`).join("")}
+                                </ul>
+                            </li>
+                        `).join("")}
+                    </ul>
+                </article>
+            `).join("");
+        }
+
+        function applyStaticText(lang) {
+            const dict = i18n[lang];
+            document.documentElement.lang = lang;
+            document.querySelector('[data-i18n="contentPlaceholder"]').textContent = dict.contentPlaceholder;
+            familySiteSelect.options[0].textContent = dict.familySite;
+            hamburgerBtn.setAttribute("aria-label", dict.ariaMenuOpen);
+        }
+
+        languageSelect.addEventListener("change", (event) => {
+            const lang = event.target.value;
+            applyStaticText(lang);
+            renderMenu(lang);
+        });
+
+        familySiteSelect.addEventListener("change", (event) => {
+            const url = event.target.value;
+            if (url) window.open(url, "_blank");
+        });
+
+        hamburgerBtn.addEventListener("click", () => {
+            const isOpen = allmenuPanel.classList.toggle("open");
+            hamburgerBtn.classList.toggle("is-open", isOpen);
+            hamburgerBtn.setAttribute("aria-expanded", String(isOpen));
+
+            const lang = languageSelect.value;
+            const dict = i18n[lang];
+            hamburgerBtn.setAttribute("aria-label", isOpen ? dict.ariaMenuClose : dict.ariaMenuOpen);
+        });
+
+        applyStaticText("ko");
+        renderMenu("ko");
+    </script>
+</body>
+</html>

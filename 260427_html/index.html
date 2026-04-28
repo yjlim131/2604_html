@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YJ 올리브영</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            height: 64px;
+            padding: 0 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 로고 */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            margin-right: 48px;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .logo-icon .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .logo-icon .dot-red    { background: #e03030; }
+        .logo-icon .dot-yellow { background: #f5a623; width: 10px; height: 10px; margin-top: -6px; }
+        .logo-icon .dot-blue   { background: #1a5fa8; }
+
+        .logo-text {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
+        }
+
+        .logo-text span {
+            color: #1a5fa8;
+        }
+
+        /* 메인 GNB */
+        .gnb {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            gap: 0;
+            flex: 1;
+        }
+
+        .gnb > li {
+            position: relative;
+        }
+
+        .gnb > li > a {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0 18px;
+            height: 64px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+
+        .gnb > li > a:hover,
+        .gnb > li:hover > a {
+            color: #007a4e;
+        }
+
+        .gnb > li > a .ext-icon {
+            font-size: 11px;
+            color: #888;
+        }
+
+        /* 2depth 드롭다운 */
+        .gnb > li:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 64px;
+            left: 0;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-top: 2px solid #007a4e;
+            min-width: 160px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .dropdown li {
+            list-style: none;
+        }
+
+        .dropdown li a {
+            display: block;
+            padding: 11px 20px;
+            font-size: 13px;
+            color: #444;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .dropdown li a:hover {
+            background: #f5faf7;
+            color: #007a4e;
+        }
+
+        /* 우측 유틸 */
+        .header-utils {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .util-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #333;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .util-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .util-btn .arrow {
+            font-size: 10px;
+            color: #888;
+        }
+
+        /* 햄버거 버튼 */
+        .hamburger-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 36px;
+            height: 36px;
+            padding: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.15s;
+            margin-left: 4px;
+        }
+
+        .hamburger-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .hamburger-btn span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: #333;
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        /* 햄버거 오픈 상태 */
+        .hamburger-btn.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger-btn.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ===== 사이드 드로어 (햄버거 메뉴) ===== */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 1100;
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -380px;
+            width: 360px;
+            height: 100%;
+            background: #fff;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .drawer-logo {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1a1a1a;
+        }
+
+        .drawer-logo span {
+            color: #1a5fa8;
+        }
+
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #555;
+            line-height: 1;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .drawer-close:hover {
+            background: #f5f5f5;
+        }
+
+        /* 드로어 메뉴 */
+        .drawer-nav {
+            flex: 1;
+            padding: 8px 0;
+        }
+
+        .drawer-menu-item {
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .drawer-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .drawer-1depth {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: color 0.15s;
+            user-select: none;
+        }
+
+        .drawer-1depth:hover {
+            color: #007a4e;
+        }
+
+        .drawer-1depth .toggle-icon {
+            font-size: 12px;
+            color: #aaa;
+            transition: transform 0.25s;
+        }
+
+        .drawer-1depth.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .drawer-1depth .ext-icon {
+            font-size: 12px;
+            color: #aaa;
+            margin-left: 4px;
+        }
+
+        /* 2depth 서브메뉴 */
+        .drawer-submenu {
+            display: none;
+            background: #f9f9f9;
+            padding: 4px 0 8px;
+        }
+
+        .drawer-submenu.open {
+            display: block;
+        }
+
+        .drawer-submenu a {
+            display: block;
+            padding: 10px 24px 10px 36px;
+            font-size: 13px;
+            color: #555;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .drawer-submenu a:hover {
+            color: #007a4e;
+        }
+
+        /* 드로어 하단 유틸 */
+        .drawer-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .drawer-util-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.15s;
+        }
+
+        .drawer-util-btn:hover {
+            background: #ebebeb;
+        }
+
+        /* ===== 공통 ===== */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #007a4e;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #111;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* ===== HERO BANNER ===== */
+        .hero {
+            margin-top: 64px;
+            position: relative;
+            height: 640px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #003d26 0%, #006640 40%, #1a5fa8 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 600px 500px at 80% 50%, rgba(26,95,168,0.35) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 300px at 20% 80%, rgba(0,122,78,0.4) 0%, transparent 60%);
+        }
+
+        /* 장식 원형 */
+        .hero-deco {
+            position: absolute;
+            right: 8%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-deco::before {
+            content: '';
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* 떠다니는 뱃지 */
+        .hero-badge {
+            position: absolute;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .hero-badge.b1 { right: 18%; top: 22%; animation-delay: 0s; }
+        .hero-badge.b2 { right: 28%; bottom: 22%; animation-delay: 1.5s; }
+        .hero-badge.b3 { right: 8%;  top: 55%; animation-delay: 0.8s; }
+
+        .hero-badge .badge-num {
+            font-size: 22px;
+            font-weight: 900;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-10px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 0 80px;
+            max-width: 700px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            color: #7dffc4;
+        }
+
+        .hero-subtitle {
+            font-size: 17px;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: #fff;
+            color: #007a4e;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: transparent;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 50px;
+            text-decoration: none;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #fff;
+        }
+
+        /* 스크롤 힌트 */
+        .hero-scroll {
+            position: absolute;
+            bottom: 32px;
+            left: 80px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .scroll-line {
+            width: 40px;
+            height: 1px;
+            background: rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+            0%   { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* ===== 숫자 통계 ===== */
+        .stats {
+            background: #007a4e;
+            padding: 56px 0;
+        }
+
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0 20px;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-num {
+            font-size: 44px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-num sup {
+            font-size: 22px;
+            vertical-align: super;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        /* ===== 인재상 ===== */
+        .talent {
+            background: #fff;
+        }
+
+        .talent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 56px;
+        }
+
+        .talent-card {
+            position: relative;
+            padding: 40px 36px;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s;
+            cursor: default;
+        }
+
+        .talent-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 48px rgba(0,0,0,0.1);
+        }
+
+        .talent-card.c1 { background: linear-gradient(135deg, #e8f7f0 0%, #d0efe3 100%); }
+        .talent-card.c2 { background: linear-gradient(135deg, #e8f0fa 0%, #ccdaf5 100%); }
+        .talent-card.c3 { background: linear-gradient(135deg, #fef6e4 0%, #fde8b0 100%); }
+
+        .talent-num {
+            font-size: 56px;
+            font-weight: 900;
+            opacity: 0.12;
+            color: #1a1a1a;
+            position: absolute;
+            top: 20px;
+            right: 28px;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .talent-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 24px;
+        }
+
+        .talent-card.c1 .talent-icon { background: #007a4e; }
+        .talent-card.c2 .talent-icon { background: #1a5fa8; }
+        .talent-card.c3 .talent-icon { background: #e07000; }
+
+        .talent-card h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 12px;
+        }
+
+        .talent-card p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* ===== 복리후생 ===== */
+        .benefits {
+            background: #f7faf8;
+        }
+
+        .benefits-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 48px 0 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 22px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid #ddd;
+            background: #fff;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            border-color: #007a4e;
+            background: #007a4e;
+            color: #fff;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .benefit-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 28px 24px;
+            border: 1px solid #eee;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .benefit-card:hover {
+            border-color: #007a4e;
+            box-shadow: 0 4px 20px rgba(0,122,78,0.1);
+        }
+
+        .benefit-icon {
+            font-size: 32px;
+            margin-bottom: 14px;
+        }
+
+        .benefit-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 8px;
+        }
+
+        .benefit-card p {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.7;
+        }
+
+        /* ===== 채용 프로세스 ===== */
+        .process {
+            background: #111827;
+        }
+
+        .process .section-title { color: #fff; }
+        .process .section-desc  { color: rgba(255,255,255,0.6); }
+        .process .section-label { color: #7dffc4; }
+
+        .process-steps {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            margin-top: 64px;
+            position: relative;
+        }
+
+        .process-steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            right: 60px;
+            height: 2px;
+            background: linear-gradient(to right, #007a4e, #1a5fa8);
+            z-index: 0;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #1f2937;
+            border: 2px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .step:hover .step-circle {
+            background: #007a4e;
+            border-color: #007a4e;
+        }
+
+        .step-num {
+            position: absolute;
+            top: -8px;
+            right: calc(50% - 46px);
+            width: 20px;
+            height: 20px;
+            background: #007a4e;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.6;
+            padding: 0 8px;
+        }
+
+        /* ===== 채용 공고 ===== */
+        .jobs {
+            background: #fff;
+        }
+
+        .jobs-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .jobs-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1.5px solid #ddd;
+            background: #fff;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            border-color: #007a4e;
+            color: #007a4e;
+        }
+
+        .view-all {
+            font-size: 14px;
+            font-weight: 600;
+            color: #007a4e;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .jobs-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .job-card {
+            border: 1px solid #e8e8e8;
+            border-radius: 14px;
+            padding: 28px 30px;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #e8e8e8;
+            transition: background 0.2s;
+        }
+
+        .job-card:hover {
+            border-color: #007a4e;
+            box-shadow: 0 8px 32px rgba(0,122,78,0.1);
+            transform: translateY(-2px);
+        }
+
+        .job-card:hover::before {
+            background: #007a4e;
+        }
+
+        .job-card.featured {
+            border-color: #007a4e;
+            background: linear-gradient(135deg, #f5faf7 0%, #fff 100%);
+        }
+
+        .job-card.featured::before {
+            background: #007a4e;
+        }
+
+        .job-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .job-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+            letter-spacing: 0.3px;
+        }
+
+        .tag-new     { background: #e8f7f0; color: #007a4e; }
+        .tag-hot     { background: #fff0e8; color: #e05000; }
+        .tag-intern  { background: #e8f0fa; color: #1a5fa8; }
+        .tag-regular { background: #f5f5f5; color: #555; }
+
+        .job-dept {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .job-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .job-info {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .job-info span {
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .job-deadline {
+            position: absolute;
+            top: 28px;
+            right: 28px;
+            font-size: 12px;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #1a1a1a;
+            padding: 64px 0 0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 260px 1fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 56px;
+            border-bottom: 1px solid #333;
+        }
+
+        .footer-logo-area .footer-logo {
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .footer-logo-area .footer-logo span {
+            color: #7dffc4;
+        }
+
+        .footer-logo-area p {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.8;
+        }
+
+        .footer-logo-area .sns-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .sns-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #333;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sns-link:hover {
+            background: #007a4e;
+            color: #fff;
+        }
+
+        .footer-col h5 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col ul li a {
+            font-size: 13px;
+            color: #888;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .footer-col ul li a:hover {
+            color: #7dffc4;
+        }
+
+        .footer-bottom {
+            padding: 28px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-bottom p {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .footer-policies {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-policies a {
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .footer-policies a:hover {
+            color: #fff;
+        }
+
+        .footer-policies a.strong {
+            color: #aaa;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="header-inner">
+
+            <!-- 로고 -->
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-blue"></div>
+                </div>
+                <span class="logo-text"><span>YJ</span> 올리브영</span>
+            </a>
+
+            <!-- GNB 1depth -->
+            <ul class="gnb">
+                <li>
+                    <a href="#">회사소개</a>
+                    <ul class="dropdown">
+                        <li><a href="#">CEO 인사말</a></li>
+                        <li><a href="#">기업 비전</a></li>
+                        <li><a href="#">연혁</a></li>
+                        <li><a href="#">조직도</a></li>
+                        <li><a href="#">CI 소개</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">사업영역</a>
+                    <ul class="dropdown">
+                        <li><a href="#">H&amp;B 스토어</a></li>
+                        <li><a href="#">온라인몰</a></li>
+                        <li><a href="#">글로벌 사업</a></li>
+                        <li><a href="#">제조·ODM</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">지속가능경영</a>
+                    <ul class="dropdown">
+                        <li><a href="#">지속가능경영 전략</a></li>
+                        <li><a href="#">환경</a></li>
+                        <li><a href="#">사회</a></li>
+                        <li><a href="#">지배구조</a></li>
+                        <li><a href="#">보고서 다운로드</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">산업지원정보</a>
+                    <ul class="dropdown">
+                        <li><a href="#">입점 안내</a></li>
+                        <li><a href="#">파트너사 지원</a></li>
+                        <li><a href="#">상생 협력</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">트렌드</a>
+                    <ul class="dropdown">
+                        <li><a href="#">뷰티 트렌드</a></li>
+                        <li><a href="#">헬스 트렌드</a></li>
+                        <li><a href="#">라이프스타일</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">뉴스룸</a>
+                    <ul class="dropdown">
+                        <li><a href="#">보도자료</a></li>
+                        <li><a href="#">공지사항</a></li>
+                        <li><a href="#">카드뉴스</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" target="_blank">커리어 <span class="ext-icon">↗</span></a>
+                    <ul class="dropdown">
+                        <li><a href="#">채용공고</a></li>
+                        <li><a href="#">인재상</a></li>
+                        <li><a href="#">복리후생</a></li>
+                        <li><a href="#">인턴십</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- 우측 유틸 -->
+            <div class="header-utils">
+                <button class="util-btn">한국어 <span class="arrow">▼</span></button>
+                <button class="util-btn">Family Site <span class="arrow">▼</span></button>
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="전체 메뉴">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ===== 드로어 오버레이 ===== -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- ===== 사이드 드로어 ===== -->
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <span class="drawer-logo"><span>YJ</span> 올리브영</span>
+            <button class="drawer-close" id="drawerClose" aria-label="닫기">✕</button>
+        </div>
+
+        <nav class="drawer-nav">
+
+            <!-- 회사소개 -->
+            <div class="drawer-menu-item">
+                <div class="drawer-1depth" data-target="sub-company">
+                    회사소개 <span class="toggle-icon">▼</span>
+                </div>
+                <div class="drawer-submenu" id="sub-company">
+                    <a href="#">CEO 인사말</a>
+                    <a href="#">기업 비전</a>
+                    <a href="#">연혁</a>
+                    <a href="#">조직도</a>
+                    <a href="#">CI 소개</a>
+                </div>
+            </div>
+
+            <!-- 사업영역 -->
+            <div class="drawer-menu-item">
+                <div class="drawer-1depth" data-target="sub-business">
+                    사업영역 <span class="toggle-icon">▼</span>
+                </div>
+                <div class="drawer-submenu" id="sub-business">
+                    <a href="#">H&amp;B 스토어</a>
+                    <a href="#">온라인몰</a>
+                    <a href="#">글로벌 사업</a>
+                    <a href="#">제조·ODM</a>
+                </div>
+            </div>
+
+            <!-- 지속가능경영 -->
+            <div class="drawer-menu-item">
+                <div class="drawer-1depth" data-target="sub-esg">
+                    지속가능경영 <span class="toggle-icon">▼</span>
+                </div>
+                <div class="drawer-submenu" id="sub-esg">
+                    <a href="#">지속가능경영 전략</a>
+                    <a href="#">환경</a>
+                    <a href="#">사회</a>
+                    <a href="#">지배구조</a>
+                    <a href="#">보고서 다운로드</a>
+                </div>
+            </div>
+
+            <!-- 산업지원정보 -->
+            <div class="drawer-menu-item">
+                <div class="drawer-1depth" data-target="sub-industry">
+                    산업지원정보 <span class="toggle-icon">▼</span>
+                </div>
+                <div class="drawer-submenu" id="sub-industry">
+                    <a href="#">입점 안내</a>
+                    <a href="#">파트너사 지원</a>
+                    <a href="#">상생 협력</a>
+                </div>
+            </div>
+
+            <!-- 트렌드 -->
+            <div class="drawer-menu-item">
+                <div class="drawer-1depth" data-target="sub-trend">
+                    트렌드 <span class="toggle-icon">▼</span>
+                </div>
+                <div class="drawer-submenu" id="sub-trend">
+                    <a href="#">뷰티 트렌드</a>
+                    <a href="#">헬스 트렌드</a>
+                    <a href="#">라이프스타일</a>
+                </div>
+            </div>
+
+            <!-- 뉴스룸 -->
+            <div class="drawer-menu-item">
+                <div class="drawer-1depth" data-target="sub-news">
+                    뉴스룸 <span class="toggle-icon">▼</span>
+                </div>
+                <div class="drawer-submenu" id="sub-news">
+                    <a href="#">보도자료</a>
+                    <a href="#">공지사항</a>
+                    <a href="#">카드뉴스</a>
+                </div>
+            </div>
+
+            <!-- 커리어 -->
+            <div class="drawer-menu-item">
+                <div class="drawer-1depth" data-target="sub-career">
+                    커리어 <span class="ext-icon">↗</span><span class="toggle-icon">▼</span>
+                </div>
+                <div class="drawer-submenu" id="sub-career">
+                    <a href="#">채용공고</a>
+                    <a href="#">인재상</a>
+                    <a href="#">복리후생</a>
+                    <a href="#">인턴십</a>
+                </div>
+            </div>
+
+        </nav>
+
+        <div class="drawer-footer">
+            <button class="drawer-util-btn">한국어</button>
+            <button class="drawer-util-btn">Family Site</button>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- ===== HERO BANNER ===== -->
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-tag">CAREER · YJ 올리브영</span>
+                <h1 class="hero-title">
+                    함께 성장하는<br>
+                    <em>뷰티&헬스</em> 리더를<br>
+                    찾습니다
+                </h1>
+                <p class="hero-subtitle">
+                    YJ 올리브영과 함께 대한민국 라이프스타일을 바꿀<br>
+                    열정 있는 인재를 모십니다.
+                </p>
+                <div class="hero-btns">
+                    <a href="#jobs" class="btn-primary">채용 공고 보기 →</a>
+                    <a href="#process" class="btn-outline">채용 프로세스 안내</a>
+                </div>
+            </div>
+
+            <!-- 장식 요소 -->
+            <div class="hero-deco"></div>
+            <div class="hero-badge b1">
+                <span class="badge-num">1,300<sup>+</sup></span>전국 매장
+            </div>
+            <div class="hero-badge b2">
+                <span class="badge-num">2,400<sup>+</sup></span>임직원
+            </div>
+            <div class="hero-badge b3">
+                <span class="badge-num">Top 1</span>H&amp;B 스토어
+            </div>
+
+            <div class="hero-scroll">
+                <div class="scroll-line"></div>
+                SCROLL DOWN
+            </div>
+        </section>
+
+        <!-- ===== 통계 ===== -->
+        <section class="stats">
+            <div class="stats-inner">
+                <div class="stat-item">
+                    <div class="stat-num">1,300<sup>+</sup></div>
+                    <div class="stat-label">전국 매장 수</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">2,400<sup>+</sup></div>
+                    <div class="stat-label">전체 임직원 수</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">65,000<sup>+</sup></div>
+                    <div class="stat-label">취급 상품 수</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">글로벌</div>
+                    <div class="stat-label">해외 사업 진출국</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 인재상 ===== -->
+        <section class="section talent" id="talent">
+            <div class="section-inner">
+                <p class="section-label">Talent</p>
+                <h2 class="section-title">YJ 올리브영이 찾는<br>인재상</h2>
+                <p class="section-desc">뷰티와 헬스를 사랑하고, 변화를 두려워하지 않는 사람과 함께합니다.</p>
+
+                <div class="talent-grid">
+                    <div class="talent-card c1">
+                        <span class="talent-num">01</span>
+                        <div class="talent-icon">🌱</div>
+                        <h3>성장 지향형 인재</h3>
+                        <p>끊임없이 배우고 도전하며 스스로 성장하는 자세로 변화하는 시장에 능동적으로 대응할 수 있는 인재</p>
+                    </div>
+                    <div class="talent-card c2">
+                        <span class="talent-num">02</span>
+                        <div class="talent-icon">🤝</div>
+                        <h3>협력·소통하는 인재</h3>
+                        <p>동료와 파트너를 존중하며 열린 마음으로 소통하고 팀의 목표를 위해 함께 나아가는 인재</p>
+                    </div>
+                    <div class="talent-card c3">
+                        <span class="talent-num">03</span>
+                        <div class="talent-icon">💡</div>
+                        <h3>창의·혁신형 인재</h3>
+                        <p>새로운 시각으로 문제를 바라보고 고객 경험을 혁신하는 아이디어를 현실로 만드는 인재</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 복리후생 ===== -->
+        <section class="section benefits" id="benefits">
+            <div class="section-inner">
+                <p class="section-label">Benefits</p>
+                <h2 class="section-title">구성원을 위한<br>복리후생</h2>
+
+                <div class="benefits-tabs">
+                    <button class="tab-btn active">전체</button>
+                    <button class="tab-btn">성장·개발</button>
+                    <button class="tab-btn">건강·여가</button>
+                    <button class="tab-btn">생활·지원</button>
+                </div>
+
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">📚</div>
+                        <h4>교육비 지원</h4>
+                        <p>직무 역량 강화를 위한 사내·외 교육 프로그램 전액 지원</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🏥</div>
+                        <h4>의료비 지원</h4>
+                        <p>본인 및 가족 의료비, 건강검진 전액 지원</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🛍️</div>
+                        <h4>임직원 쇼핑 혜택</h4>
+                        <p>올리브영 온·오프라인 전 상품 특별 할인 제공</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🏠</div>
+                        <h4>주거 지원</h4>
+                        <p>사내 대출 및 주거 안정 지원금 제공</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🌴</div>
+                        <h4>휴가 제도</h4>
+                        <p>리프레시 휴가, 창립기념일 휴가 등 법정 외 휴가 운영</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">👶</div>
+                        <h4>육아 지원</h4>
+                        <p>육아휴직 100% 보장, 사내 어린이집 운영</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🍽️</div>
+                        <h4>식사 지원</h4>
+                        <p>사내 식당 운영 및 중식비·석식비 전액 지원</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💰</div>
+                        <h4>성과급·인센티브</h4>
+                        <p>개인 및 팀 성과에 따른 차별화된 인센티브 지급</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 채용 프로세스 ===== -->
+        <section class="section process" id="process">
+            <div class="section-inner">
+                <p class="section-label">Process</p>
+                <h2 class="section-title">채용 프로세스</h2>
+                <p class="section-desc">YJ 올리브영의 채용은 투명하고 공정하게 진행됩니다.</p>
+
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-circle">
+                            <span class="step-num">1</span>
+                            📝
+                        </div>
+                        <h4>서류 지원</h4>
+                        <p>채용 공고 확인 후<br>온라인 지원서 접수</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">
+                            <span class="step-num">2</span>
+                            🔍
+                        </div>
+                        <h4>서류 전형</h4>
+                        <p>지원서 및 포트폴리오<br>검토</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">
+                            <span class="step-num">3</span>
+                            💻
+                        </div>
+                        <h4>직무 검사</h4>
+                        <p>직무 적합도 및<br>역량 테스트</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">
+                            <span class="step-num">4</span>
+                            🗣️
+                        </div>
+                        <h4>1차 면접</h4>
+                        <p>실무진 면접<br>(직무 역량 중심)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">
+                            <span class="step-num">5</span>
+                            👔
+                        </div>
+                        <h4>2차 면접</h4>
+                        <p>임원 면접<br>(인성·조직 적합도)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">
+                            <span class="step-num">6</span>
+                            🎉
+                        </div>
+                        <h4>최종 합격</h4>
+                        <p>처우 협의 및<br>입사 일정 안내</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 채용 공고 ===== -->
+        <section class="section jobs" id="jobs">
+            <div class="section-inner">
+                <div class="jobs-header">
+                    <div>
+                        <p class="section-label">Job Openings</p>
+                        <h2 class="section-title" style="margin-bottom:0">현재 채용 중인<br>포지션</h2>
+                    </div>
+                    <a href="#" class="view-all">전체 공고 보기 →</a>
+                </div>
+
+                <div class="jobs-filter" style="margin-bottom:32px">
+                    <button class="filter-btn active">전체</button>
+                    <button class="filter-btn">마케팅</button>
+                    <button class="filter-btn">IT·개발</button>
+                    <button class="filter-btn">MD·바이어</button>
+                    <button class="filter-btn">경영지원</button>
+                    <button class="filter-btn">인턴십</button>
+                </div>
+
+                <div class="jobs-list">
+                    <div class="job-card featured">
+                        <div class="job-meta">
+                            <span class="job-tag tag-hot">HOT</span>
+                            <span class="job-dept">IT · 개발</span>
+                        </div>
+                        <h3>프론트엔드 개발자 (React)</h3>
+                        <div class="job-info">
+                            <span>📍 서울 중구</span>
+                            <span>💼 경력 3년 이상</span>
+                            <span>🕐 상시채용</span>
+                        </div>
+                        <span class="job-deadline">~ 2026.05.31</span>
+                    </div>
+                    <div class="job-card">
+                        <div class="job-meta">
+                            <span class="job-tag tag-new">NEW</span>
+                            <span class="job-dept">마케팅</span>
+                        </div>
+                        <h3>디지털 마케팅 매니저</h3>
+                        <div class="job-info">
+                            <span>📍 서울 중구</span>
+                            <span>💼 경력 5년 이상</span>
+                            <span>🕐 ~05.15</span>
+                        </div>
+                        <span class="job-deadline">~ 2026.05.15</span>
+                    </div>
+                    <div class="job-card">
+                        <div class="job-meta">
+                            <span class="job-tag tag-regular">정규직</span>
+                            <span class="job-dept">MD · 바이어</span>
+                        </div>
+                        <h3>뷰티 카테고리 MD (스킨케어)</h3>
+                        <div class="job-info">
+                            <span>📍 서울 중구</span>
+                            <span>💼 경력 2년 이상</span>
+                            <span>🕐 ~05.20</span>
+                        </div>
+                        <span class="job-deadline">~ 2026.05.20</span>
+                    </div>
+                    <div class="job-card">
+                        <div class="job-meta">
+                            <span class="job-tag tag-new">NEW</span>
+                            <span class="job-dept">IT · 개발</span>
+                        </div>
+                        <h3>데이터 엔지니어 (빅데이터 플랫폼)</h3>
+                        <div class="job-info">
+                            <span>📍 서울 중구</span>
+                            <span>💼 경력 3년 이상</span>
+                            <span>🕐 ~06.01</span>
+                        </div>
+                        <span class="job-deadline">~ 2026.06.01</span>
+                    </div>
+                    <div class="job-card">
+                        <div class="job-meta">
+                            <span class="job-tag tag-intern">인턴십</span>
+                            <span class="job-dept">경영지원</span>
+                        </div>
+                        <h3>2026 하반기 경영지원 인턴십</h3>
+                        <div class="job-info">
+                            <span>📍 서울 중구</span>
+                            <span>💼 신입·재학생</span>
+                            <span>🕐 ~05.10</span>
+                        </div>
+                        <span class="job-deadline">~ 2026.05.10</span>
+                    </div>
+                    <div class="job-card">
+                        <div class="job-meta">
+                            <span class="job-tag tag-regular">정규직</span>
+                            <span class="job-dept">글로벌 사업</span>
+                        </div>
+                        <h3>글로벌 사업개발 담당 (동남아)</h3>
+                        <div class="job-info">
+                            <span>📍 서울 중구</span>
+                            <span>💼 경력 4년 이상</span>
+                            <span>🕐 ~05.25</span>
+                        </div>
+                        <span class="job-deadline">~ 2026.05.25</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-logo-area">
+                    <a href="#" class="footer-logo">
+                        <span>YJ</span> 올리브영
+                    </a>
+                    <p>대한민국 No.1 H&amp;B 스토어<br>고객의 건강하고 아름다운<br>삶을 함께 만들어갑니다.</p>
+                    <div class="sns-links">
+                        <a href="#" class="sns-link" title="Instagram">in</a>
+                        <a href="#" class="sns-link" title="YouTube">▶</a>
+                        <a href="#" class="sns-link" title="Facebook">f</a>
+                        <a href="#" class="sns-link" title="Blog">B</a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h5>채용 안내</h5>
+                    <ul>
+                        <li><a href="#">채용 공고</a></li>
+                        <li><a href="#">인재상</a></li>
+                        <li><a href="#">복리후생</a></li>
+                        <li><a href="#">채용 프로세스</a></li>
+                        <li><a href="#">인턴십</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>회사 소개</h5>
+                    <ul>
+                        <li><a href="#">CEO 인사말</a></li>
+                        <li><a href="#">기업 비전</a></li>
+                        <li><a href="#">연혁</a></li>
+                        <li><a href="#">사업영역</a></li>
+                        <li><a href="#">지속가능경영</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>고객 지원</h5>
+                    <ul>
+                        <li><a href="#">고객센터</a></li>
+                        <li><a href="#">입점 문의</a></li>
+                        <li><a href="#">파트너사 지원</a></li>
+                        <li><a href="#">뉴스룸</a></li>
+                        <li><a href="#">공지사항</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 YJ 올리브영. All rights reserved. | 서울특별시 중구 소공로 51 | 대표이사: 이연주 | 사업자등록번호: 123-45-67890</p>
+                <div class="footer-policies">
+                    <a href="#" class="strong">개인정보처리방침</a>
+                    <a href="#">이용약관</a>
+                    <a href="#">사이트맵</a>
+                    <a href="#">윤리경영</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const drawer = document.getElementById('drawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        const drawerClose = document.getElementById('drawerClose');
+
+        function openDrawer() {
+            drawer.classList.add('open');
+            drawerOverlay.classList.add('open');
+            hamburgerBtn.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            drawer.classList.remove('open');
+            drawerOverlay.classList.remove('open');
+            hamburgerBtn.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', () => {
+            drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+        });
+
+        drawerOverlay.addEventListener('click', closeDrawer);
+        drawerClose.addEventListener('click', closeDrawer);
+
+        // 2depth 아코디언 토글
+        document.querySelectorAll('.drawer-1depth').forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.dataset.target;
+                const submenu = document.getElementById(targetId);
+                const isOpen = submenu.classList.contains('open');
+
+                // 다른 열린 메뉴 닫기
+                document.querySelectorAll('.drawer-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.drawer-1depth.active').forEach(el => el.classList.remove('active'));
+
+                if (!isOpen) {
+                    submenu.classList.add('open');
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
